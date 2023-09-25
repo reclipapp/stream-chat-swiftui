@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.6
 // When used via SPM the minimum Swift version is 5.3 because we need support for resources
 
 import Foundation
@@ -17,7 +17,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "4.37.0"),        
+        .package(url: "https://github.com/reclipapp/stream-chat-swift.git", branch: "reclip-4.37.0"),        
         .package(url: "https://github.com/kean/Nuke.git", .exact("11.3.1"))
     ],
     targets: [
