@@ -25,12 +25,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         }
     }
 
-    private var isAppeared = false
-    private var isForegrounded = UIApplication.shared.applicationState == .active
-    private var isActive: Bool {
-        isAppeared && isForegrounded
-    }
-    
+    private var isActive = true
     private var readsString = ""
     
     private let messageListDateOverlay: DateFormatter = DateFormatter.messageListDateOverlay
@@ -145,20 +140,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             object: nil
         )
         
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(willEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-        
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -184,23 +165,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func didReceiveMemoryWarning() {
         Nuke.ImageCache.shared.removeAll()
         messageCachingUtils.clearCache()
-    }
-    
-    @objc
-    private func willEnterForeground() {
-        let wasActive = isActive
-        
-        isForegrounded = true
-        
-        if !wasActive && isActive {
-            didBecomeActive()
-        }
-    }
-    
-    
-    @objc
-    private func didEnterBackground() {
-        isForegrounded = false
     }
     
     public func scrollToLastMessage() {
@@ -327,17 +291,17 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
     
     public func onViewAppear() {
-        let wasActive = isActive
-        
-        isAppeared = true
-        
-        if !wasActive && isActive {
-            didBecomeActive()
-        }
+        setActive()
+        messages = channelDataSource.messages
+        checkNameChange()
     }
     
     public func onViewDissappear() {
-        isAppeared = false
+        isActive = false
+    }
+    
+    public func setActive() {
+        isActive = true
     }
     
     // MARK: - private
@@ -541,11 +505,6 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if shouldShow != shouldShowTypingIndicator {
             shouldShowTypingIndicator = shouldShow
         }
-    }
-    
-    private func didBecomeActive() {        
-        messages = channelDataSource.messages
-        checkNameChange()
     }
     
     deinit {
