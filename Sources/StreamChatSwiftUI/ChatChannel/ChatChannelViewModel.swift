@@ -26,9 +26,9 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     }
 
     private var isAppeared = false
-    private var isForegrounded = UIApplication.shared.applicationState == .active
+    private var isBackgrounded = UIApplication.shared.applicationState == .background
     private var isActive: Bool {
-        isAppeared && isForegrounded
+        isAppeared && !isBackgrounded
     }
     
     private var readsString = ""
@@ -190,7 +190,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func willEnterForeground() {
         let wasActive = isActive
         
-        isForegrounded = true
+        isBackgrounded = false
         
         if !wasActive && isActive {
             didBecomeActive()
@@ -200,7 +200,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     
     @objc
     private func didEnterBackground() {
-        isForegrounded = false
+        isBackgrounded = true
     }
     
     public func scrollToLastMessage() {
