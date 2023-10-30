@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // When used via SPM the minimum Swift version is 5.3 because we need support for resources
 
 import Foundation
